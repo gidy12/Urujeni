@@ -1,0 +1,10 @@
+{
+  "name": "urujeni-backend",
+  "env": {
+    "NODE_ENV": "production",
+    "MONGODB_URI": "@mongodb-uri",
+    "JWT_SECRET": "@jwt-secret",
+    "JWT_EXPIRE": "30d",
+    "FRONTEND_URL": "https://urujeni.vercel.app"
+  }
+}

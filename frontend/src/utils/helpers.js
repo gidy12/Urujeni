@@ -30,8 +30,10 @@ export const getInitials = (name) => {
   return name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
 };
 
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+
 export const generatePDF = async (title, data) => {
-  const response = await fetch('http://localhost:5000/api/reports/export', {
+  const response = await fetch(`${API_URL}/reports/export`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ title, data, format: 'pdf' })

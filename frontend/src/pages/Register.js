@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { GoogleLogin } from '@react-oauth/google';
 import { FiUser, FiLock, FiMail, FiPhone, FiShield } from 'react-icons/fi';
 
 const Register = () => {
-  const { user, register } = useAuth();
+  const { user, register, googleLogin } = useAuth();
   const navigate = useNavigate();
   const [form, setForm] = useState({ name: '', email: '', phone: '', password: '', confirmPassword: '', role: 'viewer' });
   const [error, setError] = useState('');
@@ -14,6 +15,19 @@ const Register = () => {
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  const handleGoogleSuccess = async (credentialResponse) => {
+    try {
+      setLoading(true);
+      setError('');
+      await googleLogin(credentialResponse.credential);
+      navigate('/dashboard');
+    } catch (err) {
+      setError(err.response?.data?.message || 'Google sign-in failed');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -119,6 +133,26 @@ const Register = () => {
             <button type="submit" className="btn-primary w-full" disabled={loading}>
               {loading ? 'Creating account...' : 'Create Account'}
             </button>
+
+            <div className="relative my-3">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-gray-300 dark:border-gray-600"></div>
+              </div>
+              <div className="relative flex justify-center text-xs uppercase">
+                <span className="bg-white dark:bg-gray-800 px-2 text-gray-500">or</span>
+              </div>
+            </div>
+
+            <div className="flex justify-center">
+              <GoogleLogin
+                onSuccess={handleGoogleSuccess}
+                onError={() => setError('Google sign-in failed')}
+                theme="outline"
+                size="large"
+                text="signin_with"
+                shape="rectangular"
+              />
+            </div>
           </form>
 
           <p className="mt-6 text-center text-sm text-gray-500 dark:text-gray-400">

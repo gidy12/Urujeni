@@ -1,5 +1,6 @@
 import React, { Suspense, lazy } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { GoogleOAuthProvider } from '@react-oauth/google';
 import { AuthProvider } from './context/AuthContext';
 import Layout from './components/Layout';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -23,12 +24,15 @@ const Loading = () => (
   </div>
 );
 
+const googleClientId = process.env.REACT_APP_GOOGLE_CLIENT_ID || '';
+
 const App = () => {
   return (
-    <AuthProvider>
-      <Router>
-        <Suspense fallback={<Loading />}>
-          <Routes>
+    <GoogleOAuthProvider clientId={googleClientId}>
+      <AuthProvider>
+        <Router>
+          <Suspense fallback={<Loading />}>
+            <Routes>
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
@@ -48,10 +52,11 @@ const App = () => {
             </Route>
             <Route path="*" element={<NotFound />} />
           </Routes>
-        </Suspense>
-      </Router>
-    </AuthProvider>
-  );
-};
+          </Suspense>
+        </Router>
+      </AuthProvider>
+    </GoogleOAuthProvider>
+    );
+  };
 
 export default App;

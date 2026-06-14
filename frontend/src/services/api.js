@@ -38,7 +38,8 @@ export const authAPI = {
   logout: () => api.post('/auth/logout'),
   adminCreateUser: (data) => api.post('/auth/admin-create', data),
   forgotPassword: (email) => api.post('/auth/forgot-password', { email }),
-  resetPassword: (token, password) => api.put(`/auth/reset-password/${token}`, { password })
+  resetPassword: (token, password) => api.put(`/auth/reset-password/${token}`, { password }),
+  googleLogin: (credential) => api.post('/auth/google', { credential })
 };
 
 export const membersAPI = {

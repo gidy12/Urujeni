@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
+const { OAuth2Client } = require('google-auth-library');
 const User = require('../models/User');
 const AuditLog = require('../models/AuditLog');
 
@@ -100,6 +101,78 @@ exports.login = async (req, res, next) => {
         user,
         token
       }
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.googleLogin = async (req, res, next) => {
+  try {
+    const { credential } = req.body;
+    if (!credential) {
+      return res.status(400).json({ message: 'Google credential is required' });
+    }
+
+    const clientId = process.env.GOOGLE_CLIENT_ID;
+    if (!clientId) {
+      return res.status(500).json({ message: 'Google auth not configured on server' });
+    }
+
+    const client = new OAuth2Client(clientId);
+    const ticket = await client.verifyIdToken({
+      idToken: credential,
+      audience: clientId
+    });
+    const payload = ticket.getPayload();
+
+    const email = payload.email;
+    const name = payload.name || payload.given_name || 'Google User';
+    const googleId = payload.sub;
+
+    let user = await User.findOne({ email });
+
+    if (user) {
+      if (!user.isActive) {
+        return res.status(401).json({ message: 'Account deactivated' });
+      }
+      const token = generateToken(user._id);
+
+      await AuditLog.create({
+        user: user._id,
+        action: 'LOGIN',
+        entity: 'User',
+        entityId: user._id,
+        details: { email, method: 'google' }
+      });
+
+      return res.json({
+        message: 'Login successful',
+        data: { user, token }
+      });
+    }
+
+    user = await User.create({
+      name,
+      email,
+      password: crypto.randomBytes(20).toString('hex'),
+      role: 'viewer',
+      isActive: true
+    });
+
+    const token = generateToken(user._id);
+
+    await AuditLog.create({
+      user: user._id,
+      action: 'REGISTER',
+      entity: 'User',
+      entityId: user._id,
+      details: { email, method: 'google' }
+    });
+
+    res.status(201).json({
+      message: 'Account created successfully via Google',
+      data: { user, token }
     });
   } catch (error) {
     next(error);

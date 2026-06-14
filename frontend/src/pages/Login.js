@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
-import { Link, Navigate } from 'react-router-dom';
+import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { GoogleLogin } from '@react-oauth/google';
 import { FiUser, FiLock } from 'react-icons/fi';
 
 const Login = () => {
-  const { user, login } = useAuth();
+  const { user, login, googleLogin } = useAuth();
+  const navigate = useNavigate();
   const [form, setForm] = useState({ email: '', password: '' });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -19,6 +21,19 @@ const Login = () => {
       await login(form.email, form.password);
     } catch (err) {
       setError(err.response?.data?.message || 'Login failed');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleGoogleSuccess = async (credentialResponse) => {
+    try {
+      setLoading(true);
+      setError('');
+      await googleLogin(credentialResponse.credential);
+      navigate('/dashboard');
+    } catch (err) {
+      setError(err.response?.data?.message || 'Google login failed');
     } finally {
       setLoading(false);
     }
@@ -75,6 +90,26 @@ const Login = () => {
             <button type="submit" className="btn-primary w-full" disabled={loading}>
               {loading ? 'Signing in...' : 'Sign In'}
             </button>
+
+            <div className="relative my-3">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-gray-300 dark:border-gray-600"></div>
+              </div>
+              <div className="relative flex justify-center text-xs uppercase">
+                <span className="bg-white dark:bg-gray-800 px-2 text-gray-500">or</span>
+              </div>
+            </div>
+
+            <div className="flex justify-center">
+              <GoogleLogin
+                onSuccess={handleGoogleSuccess}
+                onError={() => setError('Google sign-in failed')}
+                theme="outline"
+                size="large"
+                text="signin_with"
+                shape="rectangular"
+              />
+            </div>
 
             <div className="text-center">
               <Link to="/forgot-password" className="text-sm text-primary-600 hover:text-primary-700 font-medium">

@@ -11,7 +11,7 @@
     "start:backend": "npm start --prefix backend",
     "start:frontend": "npm start --prefix frontend",
     "seed": "npm run seed --prefix backend",
-    "build": "npm run build --prefix frontend"
+    "build": "npm install --prefix frontend && npm run build --prefix frontend"
   },
   "devDependencies": {
     "concurrently": "^8.2.2"

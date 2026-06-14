@@ -1,7 +1,7 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { FiX, FiHome, FiUsers, FiCalendar, FiFileText, FiLogOut, FiShield } from 'react-icons/fi';
+import { FiX, FiHome, FiUsers, FiCalendar, FiFileText, FiLogOut } from 'react-icons/fi';
 
 const navItems = [
   { to: '/dashboard', icon: FiHome, label: 'Dashboard' },
@@ -51,20 +51,6 @@ const Sidebar = ({ open, onClose }) => {
             </NavLink>
           ))}
           {user?.role === 'admin' && <><NavLink
-              to="/users"
-              onClick={onClose}
-              className={({ isActive }) =>
-                `flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
-                  isActive
-                    ? 'bg-primary-50 dark:bg-primary-900/50 text-primary-700 dark:text-primary-300'
-                    : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700'
-                }`
-              }
-            >
-              <FiShield size={18} />
-              Users
-            </NavLink>
-            <NavLink
               to="/audit-logs"
               onClick={onClose}
               className={({ isActive }) =>

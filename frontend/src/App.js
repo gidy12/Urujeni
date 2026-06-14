@@ -14,7 +14,6 @@ const Members = lazy(() => import('./pages/Members'));
 const MemberForm = lazy(() => import('./pages/MemberForm'));
 const Attendance = lazy(() => import('./pages/Attendance'));
 const Reports = lazy(() => import('./pages/Reports'));
-const UserManagement = lazy(() => import('./pages/UserManagement'));
 const AuditLogs = lazy(() => import('./pages/AuditLogs'));
 const NotFound = lazy(() => import('./pages/NotFound'));
 
@@ -44,8 +43,7 @@ const AppContent = () => (
               <Route path="/members/edit/:id" element={<MemberForm />} />
               <Route path="/attendance" element={<Attendance />} />
               <Route path="/reports" element={<Reports />} />
-              <Route path="/users" element={<UserManagement />} />
-              <Route path="/audit-logs" element={<AuditLogs />} />
+                <Route path="/audit-logs" element={<AuditLogs />} />
             </Route>
           </Route>
           <Route path="*" element={<NotFound />} />

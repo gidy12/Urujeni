@@ -26,19 +26,27 @@ const seed = async () => {
     });
 
     await User.create({
-      name: 'Attendance Manager',
-      email: 'manager@urujeni.com',
-      password: 'manager123',
-      role: 'attendance_manager',
+      name: 'Admin Gid',
+      email: 'gidyofficial933@gmail.com',
+      password: 'admin123',
+      role: 'admin',
       phone: '+250788000002'
     });
 
     await User.create({
-      name: 'Viewer User',
-      email: 'viewer@urujeni.com',
-      password: 'viewer123',
-      role: 'viewer',
+      name: 'Attendance Manager',
+      email: 'manager@urujeni.com',
+      password: 'manager123',
+      role: 'attendance_manager',
       phone: '+250788000003'
+    });
+
+    await User.create({
+      name: 'Manager Eric',
+      email: 'eric@urujeni.com',
+      password: 'manager123',
+      role: 'attendance_manager',
+      phone: '+250788000004'
     });
 
     console.log('Seeding members...');
@@ -99,9 +107,10 @@ const seed = async () => {
     await Attendance.insertMany(yesterdayAttendance);
 
     console.log('\n--- Seed Complete ---');
-    console.log('Admin: admin@urujeni.com / admin123');
-    console.log('Manager: manager@urujeni.com / manager123');
-    console.log('Viewer: viewer@urujeni.com / viewer123');
+    console.log('Admin 1: admin@urujeni.com / admin123');
+    console.log('Admin 2: gidyofficial933@gmail.com / admin123');
+    console.log('Manager 1: manager@urujeni.com / manager123');
+    console.log('Manager 2: eric@urujeni.com / manager123');
     console.log('---------------------\n');
 
     process.exit(0);

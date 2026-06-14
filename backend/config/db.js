@@ -1,26 +1,23 @@
 const mongoose = require('mongoose');
 
-const connectDB = async (retries = 5) => {
+const connectDB = async (retries = 3) => {
   for (let i = 0; i < retries; i++) {
     try {
       const conn = await mongoose.connect(process.env.MONGODB_URI, {
-        serverSelectionTimeoutMS: 30000,
-        connectTimeoutMS: 30000,
+        serverSelectionTimeoutMS: 15000,
+        connectTimeoutMS: 15000,
         socketTimeoutMS: 45000,
-        bufferTimeoutMS: 60000,
       });
       console.log(`MongoDB Connected: ${conn.connection.host}`);
       return;
     } catch (error) {
-      console.error(`MongoDB connection attempt ${i + 1}/${retries} failed: ${error.message}`);
+      console.error(`MongoDB attempt ${i + 1}/${retries}: ${error.message}`);
       if (i < retries - 1) {
-        const delay = Math.min(1000 * 2 ** i, 10000);
-        console.log(`Retrying in ${delay}ms...`);
-        await new Promise(resolve => setTimeout(resolve, delay));
+        await new Promise(resolve => setTimeout(resolve, 3000));
       }
     }
   }
-  process.exit(1);
+  console.log('MongoDB connection failed after all retries. Server running without DB.');
 };
 
 module.exports = connectDB;

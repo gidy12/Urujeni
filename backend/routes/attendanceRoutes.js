@@ -1,4 +1,5 @@
 const express = require('express');
+const rateLimit = require('express-rate-limit');
 const router = express.Router();
 const {
   markAttendance, getAttendanceByDate, getAttendanceRange,
@@ -7,7 +8,13 @@ const {
 const { protect, authorize } = require('../middleware/auth');
 const { auditLog } = require('../middleware/auditLog');
 
-router.post('/mark', protect, authorize('admin', 'attendance_manager'), auditLog('MARK_ATTENDANCE', 'Attendance'), markAttendance);
+const attendanceLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: process.env.NODE_ENV === 'production' ? 100 : 30,
+  message: { message: 'Too many attendance submissions, please try again later' }
+});
+
+router.post('/mark', protect, authorize('admin', 'attendance_manager'), attendanceLimiter, auditLog('MARK_ATTENDANCE', 'Attendance'), markAttendance);
 router.get('/today', protect, getTodayAttendance);
 router.get('/by-date', protect, getAttendanceByDate);
 router.get('/range', protect, getAttendanceRange);

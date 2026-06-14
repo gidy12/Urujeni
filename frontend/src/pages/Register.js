@@ -124,7 +124,6 @@ const Register = () => {
                 <FiShield className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
                 <select name="role" className="input-field pl-10" value={form.role} onChange={handleChange}>
                   <option value="attendance_manager">Attendance Manager</option>
-                  <option value="admin">Admin</option>
                 </select>
               </div>
             </div>

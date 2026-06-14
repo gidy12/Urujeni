@@ -19,7 +19,7 @@ exports.register = async (req, res, next) => {
       return res.status(400).json({ message: 'Email already registered' });
     }
 
-    const user = await User.create({ name, email, password, role: role || 'attendance_manager', phone });
+    const user = await User.create({ name, email, password, role: 'attendance_manager', phone });
     const token = generateToken(user._id);
 
     await AuditLog.create({

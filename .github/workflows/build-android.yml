@@ -35,31 +35,20 @@ jobs:
         env:
           REACT_APP_API_URL: https://urujeni-backend.onrender.com/api
 
-      - name: Setup Android SDK
-        run: |
-          ANDROID_SDK_ROOT=/usr/local/lib/android/sdk
-          mkdir -p $ANDROID_SDK_ROOT
-          curl -Lo /tmp/cmdline-tools.zip https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip
-          unzip -q /tmp/cmdline-tools.zip -d /tmp/
-          mkdir -p $ANDROID_SDK_ROOT/cmdline-tools
-          mv /tmp/cmdline-tools $ANDROID_SDK_ROOT/cmdline-tools/latest
-          yes | $ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager --sdk_root=$ANDROID_SDK_ROOT "platforms;android-36" "build-tools;36.0.0"
-          echo "ANDROID_HOME=$ANDROID_SDK_ROOT" >> $GITHUB_ENV
-
-      - name: Sync Capacitor with Android
-        run: npx cap sync android
-        working-directory: frontend
-
-      - name: Write local.properties
-        run: echo "sdk.dir=/usr/local/lib/android/sdk" > local.properties
-        working-directory: frontend/android
-
       - name: Build Android APK
-        run: chmod +x gradlew && ./gradlew assembleDebug --no-daemon --console=plain
-        working-directory: frontend/android
-        env:
-          ANDROID_HOME: /usr/local/lib/android/sdk
-          ANDROID_SDK_ROOT: /usr/local/lib/android/sdk
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 34
+          target: google_apis
+          arch: x86_64
+          emulator-options: -no-window -no-audio -no-boot
+          disable-animations: true
+          script: |
+            cd frontend
+            npx cap sync android
+            cd android
+            chmod +x gradlew
+            ./gradlew assembleDebug --no-daemon --console=plain
 
       - name: Upload APK
         uses: actions/upload-artifact@v4

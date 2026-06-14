@@ -19,7 +19,13 @@ const auditLogRoutes = require('./routes/auditLogRoutes');
 
 const app = express();
 
-connectDB();
+connectDB()
+  .then(() => {
+    app.listen(PORT, () => {
+      console.log(`Server running on port ${PORT} in ${process.env.NODE_ENV} mode`);
+    });
+  })
+  .catch(() => process.exit(1));
 
 app.use(helmet());
 const allowedOrigins = [
@@ -64,6 +70,3 @@ app.get('/api/health', (req, res) => {
 app.use(errorHandler);
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT} in ${process.env.NODE_ENV} mode`);
-});

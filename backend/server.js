@@ -19,13 +19,7 @@ const auditLogRoutes = require('./routes/auditLogRoutes');
 
 const app = express();
 
-connectDB()
-  .then(() => {
-    app.listen(PORT, () => {
-      console.log(`Server running on port ${PORT} in ${process.env.NODE_ENV} mode`);
-    });
-  })
-  .catch(() => process.exit(1));
+connectDB();
 
 app.use(helmet());
 const allowedOrigins = [
@@ -59,14 +53,22 @@ app.use('/api/reports', reportRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/audit-logs', auditLogRoutes);
 
+const dbReady = (req, res, next) => {
+  if (req.path === '/health') return next();
+  if (mongoose.connection.readyState !== 1) {
+    return res.status(503).json({ message: 'Database connecting, please retry in a few seconds' });
+  }
+  next();
+};
+app.use('/api', dbReady);
+
 app.get('/api/health', (req, res) => {
-  res.json({
-    status: 'ok',
-    timestamp: new Date().toISOString(),
-    mongodb: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected'
-  });
+  res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
 app.use(errorHandler);
 
 const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT} in ${process.env.NODE_ENV} mode`);
+});

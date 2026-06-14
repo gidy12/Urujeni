@@ -3,7 +3,6 @@ import { dashboardAPI } from '../services/api';
 import StatsCard from '../components/StatsCard';
 import AttendanceChart from '../components/AttendanceChart';
 import { FiUsers, FiUserCheck, FiUserPlus, FiCheckCircle, FiXCircle, FiCalendar } from 'react-icons/fi';
-import { formatDateTime } from '../utils/helpers';
 
 const Dashboard = () => {
   const [stats, setStats] = useState(null);
@@ -77,29 +76,7 @@ const Dashboard = () => {
             </div>
           </div>
 
-          <div className="card">
-            <h3 className="font-semibold mb-3">Recent Activity</h3>
-            <div className="space-y-3">
-              {(stats?.recentAttendance || []).slice(0, 5).map((record) => (
-                <div key={record._id} className="flex items-center justify-between text-sm">
-                  <div>
-                    <p className="font-medium">{record.member?.fullName || 'Unknown'}</p>
-                    <p className="text-xs text-gray-400">{formatDateTime(record.createdAt)}</p>
-                  </div>
-                  <span className={`badge ${
-                    record.status === 'present' ? 'badge-success' :
-                    record.status === 'absent' ? 'badge-danger' :
-                    record.status === 'late' ? 'badge-warning' : 'badge-info'
-                  }`}>
-                    {record.status}
-                  </span>
-                </div>
-              ))}
-              {(!stats?.recentAttendance || stats.recentAttendance.length === 0) && (
-                <p className="text-sm text-gray-400">No recent activity</p>
-              )}
-            </div>
-          </div>
+
         </div>
       </div>
     </div>

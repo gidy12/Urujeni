@@ -86,7 +86,7 @@ const AttendanceChart = ({ data = [], title = 'Attendance Trend' }) => {
 
   return (
     <div className="card">
-      <div style={{ height: '300px' }}>
+      <div className="h-[200px] sm:h-[300px]">
         <Bar data={chartData} options={options} />
       </div>
     </div>

@@ -163,16 +163,16 @@ const Reports = () => {
 
       {reportData && !loading && (
         <div className="space-y-4">
-          <div className="flex items-center justify-between print:hidden">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 print:hidden">
             <h2 className="text-lg font-semibold capitalize">{activeReport} Report</h2>
-            <div className="flex gap-2">
-              <button onClick={handlePrint} className="btn-secondary flex items-center gap-1">
+            <div className="flex flex-wrap gap-2">
+              <button onClick={handlePrint} className="btn-secondary text-xs sm:text-sm flex items-center gap-1">
                 <FiFileText size={16} /> Print
               </button>
-              <button onClick={handleExportJSON} className="btn-secondary flex items-center gap-1">
+              <button onClick={handleExportJSON} className="btn-secondary text-xs sm:text-sm flex items-center gap-1">
                 <FiDownload size={16} /> Export JSON
               </button>
-              <button onClick={handleShareWhatsApp} className="btn-secondary flex items-center gap-1 text-green-600 hover:bg-green-50 dark:hover:bg-green-900/30">
+              <button onClick={handleShareWhatsApp} className="btn-secondary text-xs sm:text-sm flex items-center gap-1 text-green-600 hover:bg-green-50 dark:hover:bg-green-900/30">
                 <FiShare2 size={16} /> WhatsApp
               </button>
             </div>
@@ -230,7 +230,7 @@ const AttendanceReportView = ({ data }) => {
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-gray-200 dark:border-gray-700">
+              <tr className="hidden sm:table-row border-b border-gray-200 dark:border-gray-700">
                 <th className="text-left py-2 px-2">Member</th>
                 <th className="text-left py-2 px-2">ID</th>
                 <th className="text-left py-2 px-2">Status</th>
@@ -239,11 +239,23 @@ const AttendanceReportView = ({ data }) => {
             </thead>
             <tbody>
               {data.records.map(r => (
-                <tr key={r._id} className="border-b border-gray-100 dark:border-gray-700/50">
-                  <td className="py-2 px-2">{r.member?.fullName || 'Unknown'}</td>
-                  <td className="py-2 px-2 text-gray-500">{r.member?.memberId || '-'}</td>
-                  <td className="py-2 px-2"><span className={r.status === 'present' ? 'badge-success' : r.status === 'absent' ? 'badge-danger' : r.status === 'late' ? 'badge-warning' : 'badge-info'}>{r.status}</span></td>
-                  <td className="py-2 px-2">{formatDate(r.date)}</td>
+                <tr key={r._id} className="flex flex-col sm:table-row border-b border-gray-100 dark:border-gray-700/50">
+                  <td className="py-1.5 sm:py-2 px-2 flex items-center gap-2 sm:table-cell">
+                    <span className="sm:hidden text-xs font-medium text-gray-500 w-16 shrink-0">Name</span>
+                    {r.member?.fullName || 'Unknown'}
+                  </td>
+                  <td className="py-1 sm:py-2 px-2 flex items-center gap-2 sm:table-cell text-gray-500">
+                    <span className="sm:hidden text-xs font-medium text-gray-500 w-16 shrink-0">ID</span>
+                    {r.member?.memberId || '-'}
+                  </td>
+                  <td className="py-1 sm:py-2 px-2 flex items-center gap-2 sm:table-cell">
+                    <span className="sm:hidden text-xs font-medium text-gray-500 w-16 shrink-0">Status</span>
+                    <span className={r.status === 'present' ? 'badge-success' : r.status === 'absent' ? 'badge-danger' : r.status === 'late' ? 'badge-warning' : 'badge-info'}>{r.status}</span>
+                  </td>
+                  <td className="py-1.5 sm:py-2 px-2 flex items-center gap-2 sm:table-cell">
+                    <span className="sm:hidden text-xs font-medium text-gray-500 w-16 shrink-0">Date</span>
+                    {formatDate(r.date)}
+                  </td>
                 </tr>
               ))}
             </tbody>

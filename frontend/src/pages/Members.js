@@ -60,13 +60,13 @@ const Members = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
           <h1 className="text-2xl font-bold">Members</h1>
           <p className="text-gray-500 dark:text-gray-400">{pagination.total} total members</p>
         </div>
         {canManage && (
-          <Link to="/members/new" className="btn-primary flex items-center gap-2">
+          <Link to="/members/new" className="btn-primary flex items-center gap-2 self-start sm:self-auto">
             <FiPlus size={18} /> Add Member
           </Link>
         )}
@@ -139,7 +139,7 @@ const Members = () => {
         <div className="card p-0 overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full">
-              <thead className="bg-gray-50 dark:bg-gray-700/50">
+              <thead className="hidden md:table-header-group bg-gray-50 dark:bg-gray-700/50">
                   <tr>
                     <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Member</th>
                     <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Role</th>
@@ -153,8 +153,9 @@ const Members = () => {
               </thead>
               <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
                 {members.map((member) => (
-                  <tr key={member._id} className="hover:bg-gray-50 dark:hover:bg-gray-700/30">
-                    <td className="px-4 py-3">
+                  <tr key={member._id} className="flex flex-col md:table-row border-b border-gray-200 dark:border-gray-700 md:border-b-0 hover:bg-gray-50 dark:hover:bg-gray-700/30">
+                    <td className="px-4 py-2 md:py-3 flex items-center gap-3 md:table-cell">
+                      <span className="md:hidden text-xs font-medium text-gray-500 dark:text-gray-400 uppercase w-20 shrink-0">Name</span>
                       <div className="flex items-center gap-3">
                         <div className="w-8 h-8 rounded-full bg-primary-100 dark:bg-primary-900/50 flex items-center justify-center text-primary-700 dark:text-primary-300 text-sm font-medium">
                           {getInitials(member.fullName)}
@@ -165,19 +166,34 @@ const Members = () => {
                         </div>
                       </div>
                     </td>
-                    <td className="px-4 py-3 text-sm capitalize">
+                    <td className="px-4 py-1.5 md:py-3 flex items-center gap-2 md:table-cell text-sm capitalize">
+                      <span className="md:hidden text-xs font-medium text-gray-500 dark:text-gray-400 uppercase w-20 shrink-0">Role</span>
                       <span className="badge-info">{member.role}</span>
                     </td>
-                    <td className="px-4 py-3 text-sm capitalize">{member.gender}</td>
-                    <td className="px-4 py-3 text-sm">{member.phoneNumber}</td>
-                    <td className="px-4 py-3 text-sm">{member.province}, {member.district}</td>
-                    <td className="px-4 py-3">
+                    <td className="px-4 py-1.5 md:py-3 flex items-center gap-2 md:table-cell text-sm capitalize">
+                      <span className="md:hidden text-xs font-medium text-gray-500 dark:text-gray-400 uppercase w-20 shrink-0">Gender</span>
+                      {member.gender}
+                    </td>
+                    <td className="px-4 py-1.5 md:py-3 flex items-center gap-2 md:table-cell text-sm">
+                      <span className="md:hidden text-xs font-medium text-gray-500 dark:text-gray-400 uppercase w-20 shrink-0">Phone</span>
+                      {member.phoneNumber}
+                    </td>
+                    <td className="px-4 py-1.5 md:py-3 flex items-center gap-2 md:table-cell text-sm">
+                      <span className="md:hidden text-xs font-medium text-gray-500 dark:text-gray-400 uppercase w-20 shrink-0">Location</span>
+                      {member.province}, {member.district}
+                    </td>
+                    <td className="px-4 py-1.5 md:py-3 flex items-center gap-2 md:table-cell">
+                      <span className="md:hidden text-xs font-medium text-gray-500 dark:text-gray-400 uppercase w-20 shrink-0">Status</span>
                       <span className={getStatusColor(member.status)}>{member.status}</span>
                     </td>
-                    <td className="px-4 py-3 text-sm">{formatDate(member.joiningDate)}</td>
+                    <td className="px-4 py-1.5 md:py-3 flex items-center gap-2 md:table-cell text-sm">
+                      <span className="md:hidden text-xs font-medium text-gray-500 dark:text-gray-400 uppercase w-20 shrink-0">Joined</span>
+                      {formatDate(member.joiningDate)}
+                    </td>
                     {canManage && (
-                      <td className="px-4 py-3 text-right">
-                        <div className="flex items-center justify-end gap-1">
+                      <td className="px-4 py-2 md:py-3 flex items-center gap-2 md:table-cell md:text-right">
+                        <span className="md:hidden text-xs font-medium text-gray-500 dark:text-gray-400 uppercase w-20 shrink-0">Actions</span>
+                        <div className="flex items-center gap-1">
                           <Link to={`/members/edit/${member._id}`} className="p-1.5 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg text-gray-500 hover:text-primary-600">
                             <FiEdit2 size={16} />
                           </Link>

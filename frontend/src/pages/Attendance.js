@@ -17,11 +17,11 @@ const Attendance = () => {
         <p className="text-gray-500 dark:text-gray-400">Record and view daily attendance</p>
       </div>
 
-      <div className="flex gap-2 border-b border-gray-200 dark:border-gray-700">
+      <div className="flex flex-wrap gap-2 border-b border-gray-200 dark:border-gray-700">
         {canManage && (
           <button
             onClick={() => setActiveTab('mark')}
-            className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
+            className={`px-3 sm:px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
               activeTab === 'mark' ? 'border-primary-600 text-primary-600' : 'border-transparent text-gray-500 hover:text-gray-700 dark:hover:text-gray-300'
             }`}
           >
@@ -30,7 +30,7 @@ const Attendance = () => {
         )}
         <button
           onClick={() => setActiveTab('view')}
-          className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
+          className={`px-3 sm:px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
             activeTab === 'view' ? 'border-primary-600 text-primary-600' : 'border-transparent text-gray-500 hover:text-gray-700 dark:hover:text-gray-300'
           }`}
         >
@@ -126,38 +126,38 @@ const MarkAttendance = () => {
       )}
 
       <div className="card">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 mb-4">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 mb-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Date</label>
             <input type="date" className="input-field" value={date} onChange={(e) => setDate(e.target.value)} />
           </div>
-          <div className="flex-1" />
-          <div className="flex gap-2">
-            <button type="button" onClick={() => handleSelectAll('present')} className="btn-success text-xs py-1.5 px-3 flex items-center gap-1"><FiCheck size={14} /> All Present</button>
-            <button type="button" onClick={() => handleSelectAll('absent')} className="btn-danger text-xs py-1.5 px-3 flex items-center gap-1"><FiX size={14} /> All Absent</button>
-            <button type="button" onClick={() => handleSelectAll('late')} className="btn-secondary text-xs py-1.5 px-3 flex items-center gap-1"><FiClock size={14} /> All Late</button>
+          <div className="flex-1 hidden sm:block" />
+          <div className="flex flex-wrap gap-1.5">
+            <button type="button" onClick={() => handleSelectAll('present')} className="btn-success text-xs py-1.5 px-2 sm:px-3 flex items-center gap-1"><FiCheck size={14} /> <span className="hidden sm:inline">All Present</span></button>
+            <button type="button" onClick={() => handleSelectAll('absent')} className="btn-danger text-xs py-1.5 px-2 sm:px-3 flex items-center gap-1"><FiX size={14} /> <span className="hidden sm:inline">All Absent</span></button>
+            <button type="button" onClick={() => handleSelectAll('late')} className="btn-secondary text-xs py-1.5 px-2 sm:px-3 flex items-center gap-1"><FiClock size={14} /> <span className="hidden sm:inline">All Late</span></button>
           </div>
         </div>
 
         <div className="space-y-1 max-h-[500px] overflow-y-auto">
           {members.map(member => (
-            <div key={member._id} className="flex items-center justify-between py-2 px-2 hover:bg-gray-50 dark:hover:bg-gray-700/30 rounded-lg">
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-full bg-primary-100 dark:bg-primary-900/50 flex items-center justify-center text-primary-700 dark:text-primary-300 text-xs font-medium">
+            <div key={member._id} className="flex flex-col sm:flex-row sm:items-center justify-between py-2 px-2 hover:bg-gray-50 dark:hover:bg-gray-700/30 rounded-lg gap-2 sm:gap-0">
+              <div className="flex items-center gap-3 min-w-0">
+                <div className="w-8 h-8 rounded-full bg-primary-100 dark:bg-primary-900/50 flex items-center justify-center text-primary-700 dark:text-primary-300 text-xs font-medium shrink-0">
                   {member.fullName?.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)}
                 </div>
-                <div>
-                  <p className="text-sm font-medium">{member.fullName}</p>
-                  <p className="text-xs text-gray-400">{member.memberId} - {member.gender}</p>
+                <div className="min-w-0">
+                  <p className="text-sm font-medium truncate">{member.fullName}</p>
+                  <p className="text-xs text-gray-400 truncate">{member.memberId} - {member.gender}</p>
                 </div>
               </div>
-              <div className="flex gap-1.5">
+              <div className="flex gap-1 sm:gap-1.5">
                 {['present', 'absent', 'excused', 'late'].map(status => (
                   <button
                     key={status}
                     type="button"
                     onClick={() => handleStatusChange(member._id, status)}
-                    className={`px-3 py-1.5 text-xs font-medium rounded-lg border transition-colors flex items-center gap-1 ${
+                    className={`px-1.5 sm:px-3 py-1 sm:py-1.5 text-xs font-medium rounded-lg border transition-colors flex items-center gap-0.5 sm:gap-1 ${
                       attendance[member._id] === status
                         ? status === 'present' ? 'bg-green-100 border-green-300 text-green-700 dark:bg-green-900/50 dark:border-green-600 dark:text-green-300'
                           : status === 'absent' ? 'bg-red-100 border-red-300 text-red-700 dark:bg-red-900/50 dark:border-red-600 dark:text-red-300'
@@ -167,7 +167,7 @@ const MarkAttendance = () => {
                     }`}
                   >
                     {statusIcons[status]}
-                    {status.charAt(0).toUpperCase() + status.slice(1)}
+                    <span className="hidden sm:inline">{status.charAt(0).toUpperCase() + status.slice(1)}</span>
                   </button>
                 ))}
               </div>
@@ -246,7 +246,7 @@ const ViewAttendance = () => {
         <div className="card p-0 overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full">
-              <thead className="bg-gray-50 dark:bg-gray-700/50">
+              <thead className="hidden md:table-header-group bg-gray-50 dark:bg-gray-700/50">
                 <tr>
                   <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Member</th>
                   <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">ID</th>
@@ -257,14 +257,27 @@ const ViewAttendance = () => {
               </thead>
               <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
                 {records.map(record => (
-                  <tr key={record._id} className="hover:bg-gray-50 dark:hover:bg-gray-700/30">
-                    <td className="px-4 py-3 text-sm font-medium">{record.member?.fullName || 'Unknown'}</td>
-                    <td className="px-4 py-3 text-sm text-gray-500">{record.member?.memberId || '-'}</td>
-                    <td className="px-4 py-3">
+                  <tr key={record._id} className="flex flex-col md:table-row border-b border-gray-200 dark:border-gray-700 md:border-b-0 hover:bg-gray-50 dark:hover:bg-gray-700/30">
+                    <td className="px-4 py-2 md:py-3 flex items-center gap-2 md:table-cell text-sm font-medium">
+                      <span className="md:hidden text-xs font-medium text-gray-500 dark:text-gray-400 uppercase w-20 shrink-0">Member</span>
+                      {record.member?.fullName || 'Unknown'}
+                    </td>
+                    <td className="px-4 py-1 md:py-3 flex items-center gap-2 md:table-cell text-sm text-gray-500">
+                      <span className="md:hidden text-xs font-medium text-gray-500 dark:text-gray-400 uppercase w-20 shrink-0">ID</span>
+                      {record.member?.memberId || '-'}
+                    </td>
+                    <td className="px-4 py-1 md:py-3 flex items-center gap-2 md:table-cell">
+                      <span className="md:hidden text-xs font-medium text-gray-500 dark:text-gray-400 uppercase w-20 shrink-0">Status</span>
                       <span className={getStatusColor(record.status)}>{record.status}</span>
                     </td>
-                    <td className="px-4 py-3 text-sm">{record.recordedBy?.name || '-'}</td>
-                    <td className="px-4 py-3 text-sm text-gray-500">{record.notes || '-'}</td>
+                    <td className="px-4 py-1 md:py-3 flex items-center gap-2 md:table-cell text-sm">
+                      <span className="md:hidden text-xs font-medium text-gray-500 dark:text-gray-400 uppercase w-20 shrink-0">By</span>
+                      {record.recordedBy?.name || '-'}
+                    </td>
+                    <td className="px-4 py-2 md:py-3 flex items-center gap-2 md:table-cell text-sm text-gray-500">
+                      <span className="md:hidden text-xs font-medium text-gray-500 dark:text-gray-400 uppercase w-20 shrink-0">Notes</span>
+                      {record.notes || '-'}
+                    </td>
                   </tr>
                 ))}
               </tbody>

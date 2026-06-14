@@ -45,14 +45,14 @@ const AuditLogs = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
           <h1 className="text-2xl font-bold">Audit Logs</h1>
           <p className="text-gray-500 dark:text-gray-400">{pagination.total} total entries</p>
         </div>
         <button
           onClick={() => setShowFilters(!showFilters)}
-          className={`btn-secondary flex items-center gap-2 ${showFilters ? 'ring-2 ring-primary-500' : ''}`}
+          className={`btn-secondary flex items-center gap-2 self-start sm:self-auto ${showFilters ? 'ring-2 ring-primary-500' : ''}`}
         >
           <FiFilter size={18} /> Filters
         </button>
@@ -97,7 +97,7 @@ const AuditLogs = () => {
         <div className="card p-0 overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full">
-              <thead className="bg-gray-50 dark:bg-gray-700/50">
+              <thead className="hidden md:table-header-group bg-gray-50 dark:bg-gray-700/50">
                 <tr>
                   <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">User</th>
                   <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Action</th>
@@ -108,19 +108,28 @@ const AuditLogs = () => {
               </thead>
               <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
                 {logs.map(log => (
-                  <tr key={log._id} className="hover:bg-gray-50 dark:hover:bg-gray-700/30">
-                    <td className="px-4 py-3">
-                      <p className="text-sm font-medium">{log.user?.name || 'System'}</p>
-                      <p className="text-xs text-gray-400">{log.user?.email || '-'}</p>
+                  <tr key={log._id} className="flex flex-col md:table-row border-b border-gray-200 dark:border-gray-700 md:border-b-0 hover:bg-gray-50 dark:hover:bg-gray-700/30">
+                    <td className="px-4 py-2 md:py-3 flex items-center gap-2 md:table-cell">
+                      <span className="md:hidden text-xs font-medium text-gray-500 dark:text-gray-400 uppercase w-20 shrink-0">User</span>
+                      <div>
+                        <p className="text-sm font-medium">{log.user?.name || 'System'}</p>
+                        <p className="text-xs text-gray-400">{log.user?.email || '-'}</p>
+                      </div>
                     </td>
-                    <td className="px-4 py-3">
+                    <td className="px-4 py-1 md:py-3 flex items-center gap-2 md:table-cell">
+                      <span className="md:hidden text-xs font-medium text-gray-500 dark:text-gray-400 uppercase w-20 shrink-0">Action</span>
                       <span className={actionColors[log.action] || 'badge-info'}>{log.action}</span>
                     </td>
-                    <td className="px-4 py-3 text-sm">{log.entity}</td>
-                    <td className="px-4 py-3 text-sm text-gray-500 max-w-[200px] truncate">
-                      {JSON.stringify(log.details?.body || log.details || {})}
+                    <td className="px-4 py-1 md:py-3 flex items-center gap-2 md:table-cell text-sm">
+                      <span className="md:hidden text-xs font-medium text-gray-500 dark:text-gray-400 uppercase w-20 shrink-0">Entity</span>
+                      {log.entity}
                     </td>
-                    <td className="px-4 py-3 text-sm text-right whitespace-nowrap">
+                    <td className="px-4 py-1 md:py-3 flex items-center gap-2 md:table-cell text-sm text-gray-500 truncate">
+                      <span className="md:hidden text-xs font-medium text-gray-500 dark:text-gray-400 uppercase w-20 shrink-0">Details</span>
+                      <span className="truncate">{JSON.stringify(log.details?.body || log.details || {})}</span>
+                    </td>
+                    <td className="px-4 py-2 md:py-3 flex items-center gap-2 md:table-cell md:text-right text-sm whitespace-nowrap">
+                      <span className="md:hidden text-xs font-medium text-gray-500 dark:text-gray-400 uppercase w-20 shrink-0">Date</span>
                       {formatDateTime(log.createdAt)}
                     </td>
                   </tr>

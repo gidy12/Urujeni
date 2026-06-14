@@ -46,21 +46,19 @@ app.use('/api/', limiter);
 
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
+const dbReady = (req, res, next) => {
+  if (mongoose.connection.readyState === 1) return next();
+  if (req.path === '/health') return next();
+  res.status(503).json({ message: 'Database connecting, please retry in a few seconds' });
+};
+app.use('/api', dbReady);
+
 app.use('/api/auth', authRoutes);
 app.use('/api/members', memberRoutes);
 app.use('/api/attendance', attendanceRoutes);
 app.use('/api/reports', reportRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/audit-logs', auditLogRoutes);
-
-const dbReady = (req, res, next) => {
-  if (req.path === '/health') return next();
-  if (mongoose.connection.readyState !== 1) {
-    return res.status(503).json({ message: 'Database connecting, please retry in a few seconds' });
-  }
-  next();
-};
-app.use('/api', dbReady);
 
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });

@@ -36,7 +36,9 @@ export const authAPI = {
   updateProfile: (data) => api.put('/auth/profile', data),
   changePassword: (data) => api.put('/auth/change-password', data),
   logout: () => api.post('/auth/logout'),
-  adminCreateUser: (data) => api.post('/auth/admin-create', data)
+  adminCreateUser: (data) => api.post('/auth/admin-create', data),
+  forgotPassword: (email) => api.post('/auth/forgot-password', { email }),
+  resetPassword: (token, password) => api.put(`/auth/reset-password/${token}`, { password })
 };
 
 export const membersAPI = {

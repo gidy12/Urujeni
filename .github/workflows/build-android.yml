@@ -25,9 +25,6 @@ jobs:
           cache: 'npm'
           cache-dependency-path: frontend/package-lock.json
 
-      - name: Setup Android SDK
-        uses: android-actions/setup-android@v3
-
       - name: Install frontend dependencies
         run: npm ci
         working-directory: frontend
@@ -42,12 +39,27 @@ jobs:
         run: npx cap copy android
         working-directory: frontend
 
+      - name: Set up Android SDK
+        run: |
+          ANDROID_SDK_ROOT=/usr/local/lib/android/sdk
+          mkdir -p $ANDROID_SDK_ROOT
+          cd /tmp
+          curl -o cmdline-tools.zip https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip
+          unzip -q cmdline-tools.zip
+          mkdir -p $ANDROID_SDK_ROOT/cmdline-tools
+          mv cmdline-tools $ANDROID_SDK_ROOT/cmdline-tools/latest
+          yes | $ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager --sdk_root=$ANDROID_SDK_ROOT "platforms;android-36" "build-tools;36.0.0" > /dev/null 2>&1
+          echo "ANDROID_HOME=$ANDROID_SDK_ROOT" >> $GITHUB_ENV
+          echo "ANDROID_SDK_ROOT=$ANDROID_SDK_ROOT" >> $GITHUB_ENV
+
       - name: Build Android APK
         run: |
-          echo "sdk.dir=$ANDROID_HOME" > local.properties
+          cd frontend/android
           chmod +x gradlew
-          ./gradlew assembleDebug
-        working-directory: frontend/android
+          ./gradlew assembleDebug --stacktrace
+        env:
+          ANDROID_HOME: /usr/local/lib/android/sdk
+          ANDROID_SDK_ROOT: /usr/local/lib/android/sdk
 
       - name: Upload APK
         uses: actions/upload-artifact@v4

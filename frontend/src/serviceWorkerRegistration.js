@@ -28,21 +28,20 @@ function registerValidSW(swUrl, config) {
   navigator.serviceWorker
     .register(swUrl)
     .then((registration) => {
-      registration.onupdatefound = () => {
-        const installingWorker = registration.installing;
-        if (!installingWorker) return;
-        installingWorker.onstatechange = () => {
-          if (installingWorker.state === 'installed') {
-            if (navigator.serviceWorker.controller) {
-              console.log('New content available; please refresh.');
-              if (config && config.onUpdate) config.onUpdate(registration);
+      registration.addEventListener('updatefound', () => {
+        const newWorker = registration.installing;
+        if (!newWorker) return;
+        newWorker.addEventListener('statechange', () => {
+          if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+            if (config && config.onUpdate) {
+              config.onUpdate(registration);
             } else {
-              console.log('Content cached for offline use.');
-              if (config && config.onSuccess) config.onSuccess(registration);
+              registration.waiting?.postMessage({ type: 'SKIP_WAITING' });
+              window.location.reload();
             }
           }
-        };
-      };
+        });
+      });
     })
     .catch((error) => {
       console.error('Error during service worker registration:', error);

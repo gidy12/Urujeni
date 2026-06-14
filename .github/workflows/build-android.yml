@@ -22,33 +22,31 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '22'
-          cache: 'npm'
-          cache-dependency-path: frontend/package-lock.json
 
-      - name: Install frontend dependencies
+      - name: Install dependencies
         run: npm ci
         working-directory: frontend
 
-      - name: Build frontend with production API URL
+      - name: Build frontend
         run: npm run build
         working-directory: frontend
         env:
           REACT_APP_API_URL: https://urujeni-backend.onrender.com/api
 
-      - name: Build Android APK
-        uses: reactivecircus/android-emulator-runner@v2
-        with:
-          api-level: 34
-          target: google_apis
-          arch: x86_64
-          emulator-options: -no-window -no-audio -no-boot
-          disable-animations: true
-          script: |
-            cd frontend
-            npx cap sync android
-            cd android
-            chmod +x gradlew
-            ./gradlew assembleDebug --no-daemon --console=plain
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Sync and Build
+        run: |
+          cd frontend
+          npx cap sync android
+          cd android
+          ls -la
+          chmod +x gradlew
+          echo "sdk.dir=/usr/local/lib/android/sdk" > local.properties
+          export ANDROID_HOME=/usr/local/lib/android/sdk
+          export ANDROID_SDK_ROOT=/usr/local/lib/android/sdk
+          ./gradlew assembleDebug --no-daemon --console=plain
 
       - name: Upload APK
         uses: actions/upload-artifact@v4

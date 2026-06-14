@@ -19,7 +19,7 @@ exports.register = async (req, res, next) => {
       return res.status(400).json({ message: 'Email already registered' });
     }
 
-    const user = await User.create({ name, email, password, role: role || 'viewer', phone });
+    const user = await User.create({ name, email, password, role: role || 'attendance_manager', phone });
     const token = generateToken(user._id);
 
     await AuditLog.create({
@@ -156,7 +156,7 @@ exports.googleLogin = async (req, res, next) => {
       name,
       email,
       password: crypto.randomBytes(20).toString('hex'),
-      role: 'viewer',
+      role: 'attendance_manager',
       isActive: true
     });
 

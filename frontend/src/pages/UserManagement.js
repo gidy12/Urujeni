@@ -3,7 +3,7 @@ import { authAPI } from '../services/api';
 import { FiUserPlus, FiShield, FiMail, FiUser, FiLock } from 'react-icons/fi';
 
 const UserManagement = () => {
-  const [form, setForm] = useState({ name: '', email: '', password: '', role: 'viewer', phone: '' });
+  const [form, setForm] = useState({ name: '', email: '', password: '', role: 'attendance_manager', phone: '' });
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState({ type: '', text: '' });
 
@@ -18,7 +18,7 @@ const UserManagement = () => {
     try {
       await authAPI.adminCreateUser(form);
       setMessage({ type: 'success', text: `User "${form.name}" created successfully as ${form.role}` });
-      setForm({ name: '', email: '', password: '', role: 'viewer', phone: '' });
+      setForm({ name: '', email: '', password: '', role: 'attendance_manager', phone: '' });
     } catch (err) {
       setMessage({ type: 'error', text: err.response?.data?.message || 'Failed to create user' });
     } finally {
@@ -80,11 +80,10 @@ const UserManagement = () => {
           <label className={labelClass}>Role</label>
           <div className="relative">
             <FiShield className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
-            <select name="role" className="input-field pl-10" value={form.role} onChange={handleChange}>
-              <option value="viewer">Viewer</option>
-              <option value="attendance_manager">Attendance Manager</option>
-              <option value="admin">Admin</option>
-            </select>
+              <select name="role" className="input-field pl-10" value={form.role} onChange={handleChange}>
+                <option value="attendance_manager">Attendance Manager</option>
+                <option value="admin">Admin</option>
+              </select>
           </div>
         </div>
 

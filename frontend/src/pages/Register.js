@@ -7,7 +7,7 @@ import { FiUser, FiLock, FiMail, FiPhone, FiShield } from 'react-icons/fi';
 const Register = () => {
   const { user, register, googleLogin } = useAuth();
   const navigate = useNavigate();
-  const [form, setForm] = useState({ name: '', email: '', phone: '', password: '', confirmPassword: '', role: 'viewer' });
+  const [form, setForm] = useState({ name: '', email: '', phone: '', password: '', confirmPassword: '', role: 'attendance_manager' });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -123,7 +123,6 @@ const Register = () => {
               <div className="relative">
                 <FiShield className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
                 <select name="role" className="input-field pl-10" value={form.role} onChange={handleChange}>
-                  <option value="viewer">Viewer</option>
                   <option value="attendance_manager">Attendance Manager</option>
                   <option value="admin">Admin</option>
                 </select>

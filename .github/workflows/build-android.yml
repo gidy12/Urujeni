@@ -25,6 +25,9 @@ jobs:
           cache: 'npm'
           cache-dependency-path: frontend/package-lock.json
 
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+
       - name: Install frontend dependencies
         run: npm ci
         working-directory: frontend
@@ -39,11 +42,11 @@ jobs:
         run: npx cap copy android
         working-directory: frontend
 
-      - name: Setup Android SDK
-        uses: android-actions/setup-android@v3
-
       - name: Build Android APK
-        run: ./gradlew assembleDebug
+        run: |
+          echo "sdk.dir=$ANDROID_HOME" > local.properties
+          chmod +x gradlew
+          ./gradlew assembleDebug
         working-directory: frontend/android
 
       - name: Upload APK

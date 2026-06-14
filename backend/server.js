@@ -67,6 +67,3 @@ const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT} in ${process.env.NODE_ENV} mode`);
 });
-//uVUaPxbJYbGl6gp0
-//gidyofficial933_db_user
-//mongodb+srv://gidyofficial933_db_user:uVUaPxbJYbGl6gp0@cluster0.92cusiy.mongodb.net/

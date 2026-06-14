@@ -24,39 +24,46 @@ const Loading = () => (
   </div>
 );
 
-const googleClientId = process.env.REACT_APP_GOOGLE_CLIENT_ID || '';
+const googleClientId = process.env.REACT_APP_GOOGLE_CLIENT_ID;
+
+const AppContent = () => (
+  <AuthProvider>
+    <Router>
+      <Suspense fallback={<Loading />}>
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password/:token" element={<ResetPassword />} />
+          <Route element={<ProtectedRoute />}>
+            <Route element={<Layout />}>
+              <Route path="/" element={<Navigate to="/dashboard" replace />} />
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/members" element={<Members />} />
+              <Route path="/members/new" element={<MemberForm />} />
+              <Route path="/members/edit/:id" element={<MemberForm />} />
+              <Route path="/attendance" element={<Attendance />} />
+              <Route path="/reports" element={<Reports />} />
+              <Route path="/users" element={<UserManagement />} />
+              <Route path="/audit-logs" element={<AuditLogs />} />
+            </Route>
+          </Route>
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </Suspense>
+    </Router>
+  </AuthProvider>
+);
 
 const App = () => {
-  return (
-    <GoogleOAuthProvider clientId={googleClientId}>
-      <AuthProvider>
-        <Router>
-          <Suspense fallback={<Loading />}>
-            <Routes>
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/forgot-password" element={<ForgotPassword />} />
-            <Route path="/reset-password/:token" element={<ResetPassword />} />
-            <Route element={<ProtectedRoute />}>
-              <Route element={<Layout />}>
-                <Route path="/" element={<Navigate to="/dashboard" replace />} />
-                <Route path="/dashboard" element={<Dashboard />} />
-                <Route path="/members" element={<Members />} />
-                <Route path="/members/new" element={<MemberForm />} />
-                <Route path="/members/edit/:id" element={<MemberForm />} />
-                <Route path="/attendance" element={<Attendance />} />
-                <Route path="/reports" element={<Reports />} />
-                <Route path="/users" element={<UserManagement />} />
-                <Route path="/audit-logs" element={<AuditLogs />} />
-              </Route>
-            </Route>
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-          </Suspense>
-        </Router>
-      </AuthProvider>
-    </GoogleOAuthProvider>
+  if (googleClientId) {
+    return (
+      <GoogleOAuthProvider clientId={googleClientId}>
+        <AppContent />
+      </GoogleOAuthProvider>
     );
-  };
+  }
+  return <AppContent />;
+};
 
 export default App;

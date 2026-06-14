@@ -4,6 +4,10 @@ import { useAuth } from '../context/AuthContext';
 import { authAPI } from '../services/api';
 import { FiMail, FiArrowLeft } from 'react-icons/fi';
 
+const getBaseUrl = () => {
+  return process.env.REACT_APP_API_URL?.replace('/api', '') || window.location.origin;
+};
+
 const ForgotPassword = () => {
   const { user } = useAuth();
   const [email, setEmail] = useState('');
@@ -21,7 +25,10 @@ const ForgotPassword = () => {
     try {
       const res = await authAPI.forgotPassword(email);
       setMessage({ type: 'success', text: res.data.message });
-      setResetUrl(res.data.data.resetUrl);
+      const url = res.data.data.resetUrl;
+      const baseUrl = getBaseUrl();
+      const token = url.split('/').pop();
+      setResetUrl(`${baseUrl}/reset-password/${token}`);
     } catch (err) {
       setMessage({ type: 'error', text: err.response?.data?.message || 'Failed to process request' });
     } finally {
@@ -53,7 +60,7 @@ const ForgotPassword = () => {
           {resetUrl && (
             <div className="mb-4 p-3 bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-lg text-sm break-all">
               <p className="font-medium mb-1">Reset Link:</p>
-              <a href={resetUrl.replace('/api', '')} className="underline">{resetUrl}</a>
+              <a href={resetUrl} className="underline">{resetUrl}</a>
               <p className="mt-2 text-xs">Click the link above or copy it to reset your password.</p>
             </div>
           )}

@@ -15,7 +15,7 @@ exports.getAuditLogs = async (req, res, next) => {
         .populate('user', 'name email role')
         .sort({ createdAt: -1 })
         .skip(skip)
-        .limit(docLimit),
+        .limit(docLimit).lean(),
       AuditLog.countDocuments(query)
     ]);
 

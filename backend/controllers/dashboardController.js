@@ -22,7 +22,7 @@ exports.getDashboardStats = async (req, res, next) => {
       .populate('member', 'memberId fullName gender')
       .populate('recordedBy', 'name')
       .sort({ createdAt: -1 })
-      .limit(10);
+      .limit(10).lean();
 
     const attendanceTrend = await getAttendanceTrend();
 
@@ -57,7 +57,7 @@ async function getTodayAttendanceStats() {
 
   const records = await Attendance.find({
     date: { $gte: today, $lt: tomorrow }
-  });
+  }).lean();
 
   return {
     presentToday: records.filter(r => r.status === 'present').length,
@@ -79,7 +79,7 @@ async function getAttendanceTrend() {
 
     const records = await Attendance.find({
       date: { $gte: date, $lt: nextDate }
-    });
+    }).lean();
 
     trend.push({
       date: date.toISOString().split('T')[0],

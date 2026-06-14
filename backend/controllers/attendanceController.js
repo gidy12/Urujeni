@@ -13,7 +13,7 @@ exports.markAttendance = async (req, res, next) => {
     for (const record of records) {
       const { memberId, status, notes } = record;
 
-      const member = await Member.findById(memberId);
+      const member = await Member.findById(memberId).lean();
       if (!member) {
         results.push({ memberId, status: 'error', message: 'Member not found' });
         continue;
@@ -59,7 +59,7 @@ exports.getAttendanceByDate = async (req, res, next) => {
     const attendance = await Attendance.find({
       date: { $gte: queryDate, $lt: nextDate }
     }).populate('member', 'memberId fullName gender phoneNumber province district')
-      .populate('recordedBy', 'name');
+      .populate('recordedBy', 'name').lean();
 
     res.json({ data: attendance });
   } catch (error) {
@@ -83,7 +83,7 @@ exports.getAttendanceRange = async (req, res, next) => {
     const attendance = await Attendance.find(query)
       .populate('member', 'memberId fullName gender')
       .populate('recordedBy', 'name')
-      .sort({ date: -1 });
+      .sort({ date: -1 }).lean();
 
     res.json({ data: attendance });
   } catch (error) {
@@ -100,7 +100,7 @@ exports.getTodayAttendance = async (req, res, next) => {
 
     const records = await Attendance.find({
       date: { $gte: today, $lt: tomorrow }
-    }).populate('member', 'memberId fullName gender province district');
+    }).populate('member', 'memberId fullName gender province district').lean();
 
     const totalMembers = await Member.countDocuments({ status: 'active' });
     const present = records.filter(r => r.status === 'present').length;
@@ -138,7 +138,7 @@ exports.getUnmarkedMembers = async (req, res, next) => {
     const unmarked = await Member.find({
       _id: { $nin: markedIds },
       status: 'active'
-    }).select('memberId fullName gender');
+    }).select('memberId fullName gender').lean();
 
     res.json({ data: unmarked });
   } catch (error) {

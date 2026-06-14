@@ -19,7 +19,7 @@ exports.getAttendanceReport = async (req, res, next) => {
 
     const attendance = await Attendance.find({
       date: { $gte: dateRange.start, $lt: dateRange.end }
-    }).populate('member', 'memberId fullName gender province district');
+    }).populate('member', 'memberId fullName gender province district').lean();
 
     const totalMembers = await Member.countDocuments({ status: 'active' });
     const summary = {
@@ -139,7 +139,7 @@ exports.getReportHistory = async (req, res, next) => {
     const reports = await Report.find()
       .populate('generatedBy', 'name')
       .sort({ createdAt: -1 })
-      .limit(50);
+      .limit(50).lean();
     res.json({ data: reports });
   } catch (error) {
     next(error);

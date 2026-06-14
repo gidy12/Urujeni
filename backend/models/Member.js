@@ -85,5 +85,10 @@ const memberSchema = new mongoose.Schema({
 });
 
 memberSchema.index({ fullName: 'text', province: 1, district: 1, status: 1 });
+memberSchema.index({ status: 1, gender: 1 });
+memberSchema.index({ province: 1, district: 1 });
+memberSchema.index({ phoneNumber: 1 });
+memberSchema.index({ emailAddress: 1 });
+memberSchema.index({ status: 1, gender: 1, province: 1, district: 1, createdAt: -1 });
 
 module.exports = mongoose.model('Member', memberSchema);

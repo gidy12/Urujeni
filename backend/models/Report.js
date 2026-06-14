@@ -38,5 +38,6 @@ const reportSchema = new mongoose.Schema({
 });
 
 reportSchema.index({ type: 1, createdAt: -1 });
+reportSchema.index({ createdAt: -1 });
 
 module.exports = mongoose.model('Report', reportSchema);

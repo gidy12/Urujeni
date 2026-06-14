@@ -25,7 +25,7 @@ exports.getMembers = async (req, res, next) => {
     const sortOption = sort || '-createdAt';
 
     const [members, total] = await Promise.all([
-      Member.find(query).sort(sortOption).skip(skip).limit(docLimit),
+      Member.find(query).sort(sortOption).skip(skip).limit(docLimit).lean(),
       Member.countDocuments(query)
     ]);
 
@@ -45,7 +45,7 @@ exports.getMembers = async (req, res, next) => {
 
 exports.getMember = async (req, res, next) => {
   try {
-    const member = await Member.findById(req.params.id);
+    const member = await Member.findById(req.params.id).lean();
     if (!member) {
       return res.status(404).json({ message: 'Member not found' });
     }

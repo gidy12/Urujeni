@@ -61,7 +61,12 @@ app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/audit-logs', auditLogRoutes);
 
 app.get('/api/health', (req, res) => {
-  res.json({ status: 'ok', timestamp: new Date().toISOString() });
+  res.json({
+    status: 'ok',
+    timestamp: new Date().toISOString(),
+    mongoUri: process.env.MONGODB_URI ? 'set (starts with ' + process.env.MONGODB_URI.substring(0, 15) + '...)' : 'NOT SET',
+    readyState: mongoose.connection.readyState
+  });
 });
 
 app.use(errorHandler);

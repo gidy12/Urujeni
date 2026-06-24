@@ -6,16 +6,18 @@ const connectDB = async () => {
       .replace('mongodb+srv://', 'mongodb://')
       .replace('cluster0.92cusiy.mongodb.net', 'ac-cofrr5j-shard-00-00.92cusiy.mongodb.net:27017,ac-cofrr5j-shard-00-01.92cusiy.mongodb.net:27017,ac-cofrr5j-shard-00-02.92cusiy.mongodb.net:27017');
     const conn = await mongoose.connect(uri, {
-      ssl: true,
+      tls: true,
       replicaSet: 'atlas-9ywhqd-shard-0',
       authSource: 'admin',
       retryWrites: true,
-      serverSelectionTimeoutMS: 30000,
-      connectTimeoutMS: 30000,
+      w: 'majority',
+      serverSelectionTimeoutMS: 20000,
+      connectTimeoutMS: 20000,
     });
     console.log(`MongoDB Connected: ${conn.connection.host}`);
   } catch (error) {
     console.log(`MongoDB error: ${error.message}`);
+    mongoose.connection.close().catch(() => {});
     setTimeout(connectDB, 10000);
   }
 };

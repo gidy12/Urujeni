@@ -63,7 +63,8 @@ app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/audit-logs', auditLogRoutes);
 
 app.get('/api/health', (req, res) => {
-  res.json({ status: 'ok', timestamp: new Date().toISOString() });
+  const states = ['disconnected', 'connected', 'connecting', 'disconnecting'];
+  res.json({ status: 'ok', timestamp: new Date().toISOString(), db: states[mongoose.connection.readyState] || 'unknown' });
 });
 
 app.use(errorHandler);

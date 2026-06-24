@@ -20,6 +20,8 @@ const auditLogRoutes = require('./routes/auditLogRoutes');
 const app = express();
 
 connectDB();
+mongoose.connection.on('error', (err) => console.error('MongoDB connection error:', err.message));
+mongoose.connection.on('disconnected', () => console.log('MongoDB disconnected'));
 
 app.use(helmet());
 const allowedOrigins = [

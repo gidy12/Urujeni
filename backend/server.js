@@ -20,8 +20,6 @@ const auditLogRoutes = require('./routes/auditLogRoutes');
 const app = express();
 
 connectDB();
-mongoose.connection.on('error', (err) => console.error('MongoDB connection error:', err.message));
-mongoose.connection.on('disconnected', () => console.log('MongoDB disconnected'));
 
 app.use(helmet());
 const allowedOrigins = [
@@ -48,13 +46,6 @@ app.use('/api/', limiter);
 
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-const dbReady = (req, res, next) => {
-  if (mongoose.connection.readyState === 1) return next();
-  if (req.path === '/health') return next();
-  res.status(503).json({ message: 'Database connecting, please retry in a few seconds' });
-};
-app.use('/api', dbReady);
-
 app.use('/api/auth', authRoutes);
 app.use('/api/members', memberRoutes);
 app.use('/api/attendance', attendanceRoutes);
@@ -63,8 +54,11 @@ app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/audit-logs', auditLogRoutes);
 
 app.get('/api/health', (req, res) => {
-  const states = ['disconnected', 'connected', 'connecting', 'disconnecting'];
-  res.json({ status: 'ok', timestamp: new Date().toISOString(), db: states[mongoose.connection.readyState] || 'unknown' });
+  res.json({
+    status: 'ok',
+    timestamp: new Date().toISOString(),
+    mongodb: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected'
+  });
 });
 
 app.use(errorHandler);
